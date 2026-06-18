@@ -1,0 +1,11 @@
+[Unit]
+Description=Media Digest GitHub Trending push
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/media-digest
+ExecStart=/opt/media-digest/scripts/run_daily_github_trending_linux.sh
+StandardOutput=append:/opt/media-digest/logs/daily-github-trending.out.log
+StandardError=append:/opt/media-digest/logs/daily-github-trending.err.log

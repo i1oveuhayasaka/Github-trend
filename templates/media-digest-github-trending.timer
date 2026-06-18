@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Media Digest GitHub Trending every day
+
+[Timer]
+OnCalendar=*-*-* 08:30:00
+Persistent=true
+Unit=media-digest-github-trending.service
+
+[Install]
+WantedBy=timers.target

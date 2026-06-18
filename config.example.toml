@@ -1,0 +1,167 @@
+[app]
+digest_title = "GitHub热门趋势项目"
+timezone = "Asia/Shanghai"
+lookback_hours = 48
+max_items = 24
+db_path = "data/digest.db"
+output_dir = "outputs"
+user_agent = "media-digest/0.1 (personal research workflow)"
+timeout_seconds = 20
+
+[ranking]
+freshness_half_life_hours = 36
+min_score = 0
+
+# 默认不调用任何付费模型。需要翻译时可选：
+# provider = "libretranslate" 并配置自建 LibreTranslate 地址
+# provider = "openai_compatible" 并配置 OPENAI_API_KEY
+[translation]
+provider = "none"
+target_language = "zh"
+libretranslate_url = ""
+libretranslate_api_key_env = "LIBRETRANSLATE_API_KEY"
+openai_base_url = "https://api.openai.com/v1"
+openai_api_key_env = "OPENAI_API_KEY"
+openai_model = "gpt-4.1-mini"
+
+[push.dingtalk]
+enabled = false
+webhook_env = "DINGTALK_WEBHOOK"
+secret_env = "DINGTALK_SECRET"
+
+[push.bark]
+enabled = false
+key_env = "BARK_KEY"
+server = "https://api.day.app"
+group = "media-digest"
+
+[push.serverchan]
+enabled = false
+sendkey_env = "SERVERCHAN_SENDKEY"
+
+[social.xiaohongshu]
+enabled = true
+max_items = 8
+hashtags = ["每日资讯", "科技新闻", "AI", "开源项目"]
+# 小红书个人号无官方发帖 API，默认用 Playwright 脚本模拟创作者中心发布。
+# 脚本会进入创作者中心并选择“发长文”。首次使用前请运行：
+# python3 scripts/publish_xiaohongshu_playwright.py --login
+publish_enabled = false
+publish_provider = "script"
+publish_script = "scripts/publish_xiaohongshu_playwright.py"
+webhook_url_env = "XHS_PUBLISH_WEBHOOK"
+browser_profile_dir = "data/xhs-browser-profile"
+browser_headless = false
+publish_timeout_seconds = 300
+
+[[sources]]
+id = "sample"
+name = "示例数据"
+type = "sample"
+enabled = false
+quality = 0.7
+max_items = 2
+tags = ["sample"]
+
+[[sources]]
+id = "bbc_world"
+name = "BBC World"
+type = "rss"
+enabled = true
+url = "https://feeds.bbci.co.uk/news/world/rss.xml"
+quality = 1.15
+max_items = 20
+tags = ["world", "news"]
+
+[[sources]]
+id = "guardian_world"
+name = "The Guardian World"
+type = "rss"
+enabled = true
+url = "https://www.theguardian.com/world/rss"
+quality = 1.1
+max_items = 20
+tags = ["world", "news"]
+
+[[sources]]
+id = "npr_news"
+name = "NPR News"
+type = "rss"
+enabled = true
+url = "https://feeds.npr.org/1001/rss.xml"
+quality = 1.05
+max_items = 20
+tags = ["us", "news"]
+
+[[sources]]
+id = "hacker_news"
+name = "Hacker News"
+type = "rss"
+enabled = true
+url = "https://hnrss.org/frontpage?points=80"
+quality = 1.15
+max_items = 25
+tags = ["tech", "hn"]
+
+[[sources]]
+id = "github_trending_daily"
+name = "GitHub Trending Daily"
+type = "github_trending"
+enabled = true
+since = "daily"
+language = ""
+quality = 1.35
+max_items = 25
+tags = ["github", "trending", "opensource"]
+
+[[sources]]
+id = "github_new_repos"
+name = "GitHub New Repos"
+type = "github_search"
+enabled = false
+query = "created:>{date_7d} stars:>20"
+sort = "stars"
+order = "desc"
+per_page = 30
+quality = 1.2
+max_items = 15
+tags = ["github", "opensource"]
+
+[[sources]]
+id = "github_ai_recent"
+name = "GitHub AI Recent"
+type = "github_search"
+enabled = true
+query = "topic:ai pushed:>{date_30d} stars:>200"
+sort = "updated"
+order = "desc"
+per_page = 30
+quality = 1.15
+max_items = 10
+tags = ["github", "ai"]
+
+[[sources]]
+id = "arxiv_ai"
+name = "arXiv AI"
+type = "arxiv"
+enabled = true
+query = "cat:cs.AI OR cat:cs.LG OR cat:cs.CL"
+sort_by = "submittedDate"
+sort_order = "descending"
+max_results = 30
+quality = 1.05
+max_items = 12
+tags = ["paper", "ai"]
+
+[[sources]]
+id = "gdelt_ai"
+name = "GDELT AI News"
+type = "gdelt"
+enabled = false
+query = "\"artificial intelligence\" OR OpenAI OR Anthropic OR Nvidia"
+timespan = "24h"
+sort = "hybridrel"
+max_records = 40
+quality = 0.9
+max_items = 10
+tags = ["global", "ai"]

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.local.media-digest.github-trending</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/path/to/Github-trend/scripts/run_daily_github_trending.sh</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/path/to/Github-trend</string>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>8</integer>
+    <key>Minute</key>
+    <integer>30</integer>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/path/to/Github-trend/logs/daily-github-trending.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/path/to/Github-trend/logs/daily-github-trending.err.log</string>
+  <key>RunAtLoad</key>
+  <false/>
+</dict>
+</plist>

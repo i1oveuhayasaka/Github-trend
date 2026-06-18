@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.venv/
+config.toml
+data/
+!data/.gitkeep
+data/xhs-browser-profile/
+logs/
+!logs/.gitkeep
+outputs/
+!outputs/.gitkeep
