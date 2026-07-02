@@ -147,6 +147,7 @@ export OPENAI_API_KEY='你的 key'
 provider = "openai_compatible"
 openai_base_url = "https://api.openai.com/v1"
 openai_model = "gpt-4.1-mini"
+openai_model_candidates = []
 ```
 
 GitHub 项目在启用 OpenAI-compatible 翻译后，会生成 2-3 句中文整理：项目是什么、适合什么场景、为什么值得关注。日报里会同时保留原始英文描述，方便核对。
@@ -178,7 +179,8 @@ BYTECAT_API_KEY='你的中转站 key'
 provider = "openai_compatible"
 openai_base_url = "https://codecdn.bytecatcode.org/v1"
 openai_api_key_env = "BYTECAT_API_KEY"
-openai_model = "deepseek-v4-flash"
+openai_model = "gpt-5.4-mini"
+openai_model_candidates = ["deepseek-v4-flash"]
 ```
 
 ## 每天定时运行
@@ -233,7 +235,8 @@ BYTECAT_API_KEY='你的中转站 key'
 provider = "openai_compatible"
 openai_base_url = "https://codecdn.bytecatcode.org/v1"
 openai_api_key_env = "BYTECAT_API_KEY"
-openai_model = "deepseek-v4-flash"
+openai_model = "gpt-5.4-mini"
+openai_model_candidates = ["deepseek-v4-flash"]
 
 [push.serverchan]
 enabled = true

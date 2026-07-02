@@ -101,7 +101,18 @@ class OpenAICompatibleTranslator(Translator):
                 )
             return items
         endpoint = self.config.openai_base_url.rstrip("/") + "/chat/completions"
+        model_candidates = list(
+            dict.fromkeys(
+                model.strip()
+                for model in [
+                    self.config.openai_model,
+                    *self.config.openai_model_candidates,
+                ]
+                if model.strip()
+            )
+        )
         failures: list[str] = []
+        preferred_model = model_candidates[0]
         for item in items:
             text = _item_source_text(item)
             if not text:
@@ -126,29 +137,39 @@ class OpenAICompatibleTranslator(Translator):
                     f"标题：{item.title}\n正文：{text[:3000]}"
                 )
                 system_prompt = "你是严谨的新闻翻译编辑。"
-            payload = {
-                "model": self.config.openai_model,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.2,
-            }
-            try:
-                result = self.client.post_json(
-                    endpoint,
-                    payload,
-                    headers={"Authorization": f"Bearer {api_key}"},
-                )
-                choices = result.get("choices") or []
-                if choices:
-                    item.translation = (
-                        choices[0].get("message", {}).get("content", "").strip()
+            ordered_models = [
+                preferred_model,
+                *[model for model in model_candidates if model != preferred_model],
+            ]
+            attempt_failures: list[str] = []
+            for model in ordered_models:
+                payload = {
+                    "model": model,
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "temperature": 0.2,
+                }
+                try:
+                    result = self.client.post_json(
+                        endpoint,
+                        payload,
+                        headers={"Authorization": f"Bearer {api_key}"},
                     )
-                if not item.translation:
-                    failures.append(f"{item.title}: empty translation")
-            except Exception as exc:
-                failures.append(f"{item.title}: {exc}")
+                    choices = result.get("choices") or []
+                    if choices:
+                        item.translation = (
+                            choices[0].get("message", {}).get("content", "").strip()
+                        )
+                    if item.translation:
+                        preferred_model = model
+                        break
+                    attempt_failures.append(f"{model}: empty translation")
+                except Exception as exc:
+                    attempt_failures.append(f"{model}: {exc}")
+            if not item.translation:
+                failures.append(f"{item.title}: {'; '.join(attempt_failures)}")
         if failures:
             raise TranslationError(failures)
         return items

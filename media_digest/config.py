@@ -28,6 +28,7 @@ class TranslationConfig:
     openai_base_url: str = "https://api.openai.com/v1"
     openai_api_key_env: str = "OPENAI_API_KEY"
     openai_model: str = "gpt-4.1-mini"
+    openai_model_candidates: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)

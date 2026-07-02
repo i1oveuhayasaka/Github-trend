@@ -23,6 +23,7 @@ libretranslate_api_key_env = "LIBRETRANSLATE_API_KEY"
 openai_base_url = "https://api.openai.com/v1"
 openai_api_key_env = "OPENAI_API_KEY"
 openai_model = "gpt-4.1-mini"
+openai_model_candidates = []
 
 [push.dingtalk]
 enabled = false
