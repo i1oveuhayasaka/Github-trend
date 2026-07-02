@@ -14,7 +14,6 @@ from .render import (
     update_github_archive,
     write_outputs,
 )
-from .publish import publish_xiaohongshu
 from .sources import fetch_all_sources
 from .store import DigestStore
 from .timeutil import cutoff
@@ -138,26 +137,6 @@ def main(argv: list[str] | None = None) -> int:
     if "xiaohongshu" in paths:
         print(f"Wrote xiaohongshu draft: {paths['xiaohongshu']}")
 
-    publish_result = None
-    if (
-        xhs_config
-        and xhs_config.enabled
-        and xhs_config.publish_enabled
-        and xhs_draft
-        and "xiaohongshu" in paths
-    ):
-        publish_result = publish_xiaohongshu(
-            client,
-            xhs_config,
-            paths["xiaohongshu"],
-            xhs_draft,
-            config.app.digest_title,
-            Path(args.config).resolve().parent,
-            dry_run=args.dry_run,
-        )
-        status = "ok" if publish_result.ok else "failed"
-        print(f"Publish xiaohongshu: {status} - {publish_result.message}")
-
     github_items = [
         item for item in translated
         if item.source_id.startswith("github")
@@ -185,25 +164,14 @@ def main(argv: list[str] | None = None) -> int:
         try:
             enabled_push = any(target.enabled for target in config.push.values())
             push_succeeded = not enabled_push or any(result.ok for result in push_results)
-            publish_required = bool(
-                xhs_config
-                and xhs_config.enabled
-                and xhs_config.publish_enabled
-            )
-            publish_succeeded = (
-                not publish_required
-                or (publish_result is not None and publish_result.ok)
-            )
-            if not args.dry_run and push_succeeded and publish_succeeded:
+            if not args.dry_run and push_succeeded:
                 store.mark_seen(translated)
                 print(f"Marked seen items: {len(translated)}")
             elif args.dry_run:
                 print("Skipped marking seen items: dry-run")
             else:
-                print("Skipped marking seen items: push or publish failed")
+                print("Skipped marking seen items: push failed")
         finally:
             store.close()
 
-    if publish_result is not None and not publish_result.ok:
-        return 5
     return 0 if ranked else 3

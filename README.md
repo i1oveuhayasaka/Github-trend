@@ -9,7 +9,7 @@
 - 按来源质量、时间新鲜度、GitHub stars/forks 等排序。
 - 输出 Markdown 日报。
 - 推送到钉钉、Bark、Server 酱，或自定义 Webhook。
-- 生成小红书长文草稿；可选用 Playwright 自动进入小红书创作者中心发布。
+- 生成小红书风格草稿，但不自动登录发帖。
 
 ## 快速开始
 
@@ -271,29 +271,13 @@ systemctl list-timers | grep media-digest
 - `github.com`
 - `codecdn.bytecatcode.org`
 - `sctapi.ftqq.com`
-- `creator.xiaohongshu.com`
-- `xiaohongshu.com`
 
-## 自动发布到小红书
+## 小红书草稿
 
-项目会生成 `outputs/xiaohongshu_YYYY-MM-DD.md` 草稿，并可通过 Playwright 自动发布到小红书创作者中心。脚本发布时会选择“发长文”，分别填写标题和正文，再点击发布。
-
-首次使用前需要在一台能打开浏览器的机器上保存登录态：
-
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install playwright
-.venv/bin/python -m playwright install chromium
-.venv/bin/python scripts/publish_xiaohongshu_playwright.py --login
-```
-
-在 Linux 服务器上定时自动发布时，确认 `config.toml` 中：
+项目只生成 `outputs/xiaohongshu_YYYY-MM-DD.md` 长文草稿，供人工检查和发布。程序不会登录小红书、保存登录态或自动点击发布。
 
 ```toml
 [social.xiaohongshu]
-publish_enabled = true
-publish_provider = "script"
-browser_headless = true
+enabled = true
+max_items = 8
 ```
-
-如果服务器以 root 运行 Chromium，脚本默认会加 `--no-sandbox`；也可以显式设置 `XHS_CHROMIUM_NO_SANDBOX=1`。小红书网页端没有稳定公开的个人发帖 API，页面改版或登录态失效时，需要重新运行 `--login` 或按报错调整选择器。

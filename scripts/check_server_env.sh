@@ -90,8 +90,7 @@ print("translation.provider =", translation.get("provider"))
 print("translation.openai_base_url =", translation.get("openai_base_url"))
 print("translation.openai_model =", translation.get("openai_model"))
 print("push.serverchan.enabled =", serverchan.get("enabled"))
-print("social.xiaohongshu.publish_enabled =", xiaohongshu.get("publish_enabled"))
-print("social.xiaohongshu.browser_headless =", xiaohongshu.get("browser_headless"))
+print("social.xiaohongshu.enabled =", xiaohongshu.get("enabled"))
 PY
   then
     ok "config.toml parsed"
@@ -111,7 +110,6 @@ urls = [
     "https://github.com/trending?since=daily",
     "https://codecdn.bytecatcode.org",
     "https://sctapi.ftqq.com",
-    "https://creator.xiaohongshu.com",
 ]
 
 failed = False
@@ -138,24 +136,6 @@ if [ -n "$PYTHON_BIN" ]; then
     ok "media_digest module can run"
   else
     fail "media_digest module cannot run from this directory"
-  fi
-  if "$PYTHON_BIN" - <<'PY'
-import tomllib
-from pathlib import Path
-config = tomllib.loads(Path("config.toml").read_text(encoding="utf-8"))
-xhs = config.get("social", {}).get("xiaohongshu", {})
-raise SystemExit(0 if xhs.get("publish_enabled") else 2)
-PY
-  then
-    if "$PYTHON_BIN" - <<'PY'
-import importlib.util
-raise SystemExit(0 if importlib.util.find_spec("playwright") else 1)
-PY
-    then
-      ok "Playwright is installed for xiaohongshu publish"
-    else
-      fail "Playwright is missing. Run: python3 -m pip install playwright && python3 -m playwright install chromium"
-    fi
   fi
 fi
 echo

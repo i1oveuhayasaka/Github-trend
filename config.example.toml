@@ -43,16 +43,7 @@ sendkey_env = "SERVERCHAN_SENDKEY"
 enabled = true
 max_items = 8
 hashtags = ["每日资讯", "科技新闻", "AI", "开源项目"]
-# 小红书个人号无官方发帖 API，默认用 Playwright 脚本模拟创作者中心发布。
-# 脚本会进入创作者中心并选择“发长文”。首次使用前请运行：
-# python3 scripts/publish_xiaohongshu_playwright.py --login
-publish_enabled = false
-publish_provider = "script"
-publish_script = "scripts/publish_xiaohongshu_playwright.py"
-webhook_url_env = "XHS_PUBLISH_WEBHOOK"
-browser_profile_dir = "data/xhs-browser-profile"
-browser_headless = false
-publish_timeout_seconds = 300
+# 仅生成 Markdown 草稿，项目不会登录或自动发布到小红书。
 
 [[sources]]
 id = "sample"

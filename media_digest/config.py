@@ -47,13 +47,6 @@ class SocialConfig:
     enabled: bool = True
     max_items: int = 8
     hashtags: list[str] = field(default_factory=lambda: ["每日资讯", "科技新闻", "AI"])
-    publish_enabled: bool = False
-    publish_provider: str = "script"
-    webhook_url_env: str = "XHS_PUBLISH_WEBHOOK"
-    publish_script: str = "scripts/publish_xiaohongshu_playwright.py"
-    browser_profile_dir: str = "data/xhs-browser-profile"
-    browser_headless: bool = False
-    publish_timeout_seconds: int = 180
 
 
 @dataclass(slots=True)
@@ -82,9 +75,24 @@ def load_config(path: str | Path) -> DigestConfig:
         if isinstance(value, dict)
     }
 
+    retired_social_keys = {
+        "publish_enabled",
+        "publish_provider",
+        "webhook_url_env",
+        "publish_script",
+        "browser_profile_dir",
+        "browser_headless",
+        "publish_timeout_seconds",
+    }
     social_data = data.get("social", {})
     social = {
-        name: SocialConfig(**value)
+        name: SocialConfig(
+            **{
+                key: setting
+                for key, setting in value.items()
+                if key not in retired_social_keys
+            }
+        )
         for name, value in social_data.items()
         if isinstance(value, dict)
     }
