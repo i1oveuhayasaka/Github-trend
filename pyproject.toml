@@ -3,7 +3,9 @@ name = "media-digest"
 version = "0.1.0"
 description = "Free and safe media intelligence digest workflow with configurable sources and mobile push."
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "chinese-calendar==1.11.0",
+]
 
 [project.scripts]
 media-digest = "media_digest.cli:main"

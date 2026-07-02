@@ -137,6 +137,11 @@ if [ -n "$PYTHON_BIN" ]; then
   else
     fail "media_digest module cannot run from this directory"
   fi
+  if "$PYTHON_BIN" -c "import chinese_calendar" >/dev/null 2>&1; then
+    ok "chinese-calendar is installed"
+  else
+    fail "chinese-calendar is missing. Install the project dependencies."
+  fi
 fi
 echo
 

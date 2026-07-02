@@ -183,9 +183,13 @@ openai_model = "gpt-5.4-mini"
 openai_model_candidates = ["deepseek-v4-flash"]
 ```
 
-## 每天定时运行
+## 中国法定工作日定时运行
 
-macOS 推荐用 launchd。项目里已经提供了一个每日 GitHub Trending 任务模板，每天 08:30 运行：
+项目使用 `chinese-calendar` 判断中国法定工作日，能识别节假日和周末调休补班。定时器每天 08:30 唤醒，只有法定工作日才会继续抓取和推送。
+
+国务院通常在年底公布下一年安排，`chinese-calendar` 也会随后更新。进入新年份前应升级该依赖；如果日期超出已支持范围，任务会报错停止，不会按普通周一至周五误判。
+
+macOS 推荐用 launchd。项目里已经提供了任务模板：
 
 ```bash
 chmod +x scripts/run_daily_github_trending.sh
@@ -250,7 +254,7 @@ scripts/check_server_env.sh
 scripts/run_daily_github_trending_linux.sh
 ```
 
-cron 定时，每天北京时间 08:30：
+cron 每天北京时间 08:30 触发，运行脚本负责跳过非法定工作日：
 
 ```cron
 TZ=Asia/Shanghai
