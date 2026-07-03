@@ -1,5 +1,5 @@
 [app]
-digest_title = "GitHub热门趋势项目"
+digest_title = "每日高质量信息简报-GitHub热门趋势"
 timezone = "Asia/Shanghai"
 lookback_hours = 48
 max_items = 24
@@ -104,7 +104,7 @@ since = "daily"
 language = ""
 quality = 1.35
 max_items = 25
-tags = ["github", "trending", "opensource"]
+tags = []
 
 [[sources]]
 id = "github_new_repos"
